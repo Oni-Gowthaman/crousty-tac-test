@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#2a2118"/>
+      <stop offset="100%" stop-color="#1a1410"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="300" fill="url(#glow)"/>
+
+  <!-- wooden board -->
+  <ellipse cx="320" cy="235" rx="270" ry="34" fill="#3a2f22"/>
+  <ellipse cx="320" cy="228" rx="270" ry="30" fill="#4a3b28"/>
+
+  <!-- taco -->
+  <g transform="translate(150,110)">
+    <path d="M-70 70 Q0 -10 70 70 Q0 118 -70 70 Z" fill="#F5B301" stroke="#1A1410" stroke-width="5"/>
+    <circle cx="-24" cy="58" r="7" fill="#E23B2E"/>
+    <circle cx="4" cy="50" r="7" fill="#3C8A4C"/>
+    <circle cx="30" cy="58" r="7" fill="#E23B2E"/>
+    <circle cx="16" cy="70" r="6" fill="#3C8A4C"/>
+    <circle cx="-8" cy="70" r="6" fill="#F5B301"/>
+    <path d="M-38 46 Q0 26 38 46" fill="none" stroke="#8a6d1f" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- burger -->
+  <g transform="translate(330,90)">
+    <path d="M-64 46 Q0 -18 64 46 Z" fill="#d99a00" stroke="#1A1410" stroke-width="5"/>
+    <rect x="-64" y="46" width="128" height="14" fill="#3C8A4C" stroke="#1A1410" stroke-width="4"/>
+    <rect x="-64" y="60" width="128" height="12" fill="#8a5a2b" stroke="#1A1410" stroke-width="4"/>
+    <rect x="-64" y="72" width="128" height="10" fill="#E23B2E" stroke="#1A1410" stroke-width="4"/>
+    <path d="M-64 82 Q0 108 64 82 L64 96 Q0 122 -64 96 Z" fill="#F5B301" stroke="#1A1410" stroke-width="5"/>
+    <circle cx="-40" cy="-2" r="3" fill="#1A1410" opacity="0.5"/>
+    <circle cx="-10" cy="-14" r="3" fill="#1A1410" opacity="0.5"/>
+    <circle cx="22" cy="-10" r="3" fill="#1A1410" opacity="0.5"/>
+    <circle cx="44" cy="2" r="3" fill="#1A1410" opacity="0.5"/>
+  </g>
+
+  <!-- fries cup -->
+  <g transform="translate(478,120)">
+    <path d="M-38 -6 L38 -6 L30 78 L-30 78 Z" fill="#E23B2E" stroke="#1A1410" stroke-width="5"/>
+    <rect x="-42" y="-22" width="84" height="20" rx="4" fill="#F5B301" stroke="#1A1410" stroke-width="5"/>
+    <line x1="-18" y1="-40" x2="-14" y2="-2" stroke="#F5B301" stroke-width="10" stroke-linecap="round"/>
+    <line x1="0" y1="-46" x2="0" y2="-4" stroke="#F5B301" stroke-width="10" stroke-linecap="round"/>
+    <line x1="18" y1="-40" x2="14" y2="-2" stroke="#F5B301" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <!-- title -->
+  <text x="320" y="270" text-anchor="middle" font-family="Arial Narrow, Arial, sans-serif" font-weight="900" font-size="26" letter-spacing="2" fill="#F5B301">CROUSTY TAC</text>
+</svg>

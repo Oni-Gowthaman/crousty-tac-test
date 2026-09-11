@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'customers' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Customers</h1>
+          <p>Everyone who has ordered — name, mobile number, and how much they've spent with you.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <% if (!customers.length) { %>
+          <div class="empty">No customers yet.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Mobile</th><th>Orders</th><th>Total spent</th><th>First seen</th></tr></thead>
+            <tbody>
+              <% customers.forEach(function(c) { %>
+                <tr>
+                  <td><%= c.name %></td>
+                  <td><%= c.mobile_number %></td>
+                  <td><%= c.order_count %></td>
+                  <td>€<%= Number(c.total_spent).toFixed(2) %></td>
+                  <td style="font-size:12px; color:#8a7f70;"><%= new Date(c.created_at).toLocaleDateString() %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

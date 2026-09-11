@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+<%- include('../partials/customer-head') %>
+</head>
+<body class="customer" data-table-code="<%= table.table_code %>" data-lang="<%= lang %>" data-dining="<%= dining %>">
+
+  <div class="top-bar">
+    <div class="top-bar-row">
+      <div>
+        <div class="brand">CROUSTY TAC</div>
+        <div class="table-tag">
+          <% if (table.is_counter) { %><%= t.counter_order %><% } else { %><%= t.table %> <%= table.table_number %><% } %>
+          · <%= dining === 'takeaway' ? t.takeaway : t.dine_in %>
+        </div>
+      </div>
+      <div class="lang-switch">
+        <a href="/t/<%= table.table_code %>/lang/fr" class="<%= lang === 'fr' ? 'active' : '' %>">FR</a>
+        <a href="/t/<%= table.table_code %>/lang/en" class="<%= lang === 'en' ? 'active' : '' %>">EN</a>
+      </div>
+    </div>
+  </div>
+
+  <% if (announcement) { %>
+    <div class="announcement-banner">📣 <%= lang === 'en' ? announcement.message_en : announcement.message_fr %></div>
+  <% } %>
+  <% if (activeOffer) { %>
+    <div class="offer-banner">🎉 <%= lang === 'en' ? activeOffer.description_en : activeOffer.description_fr %></div>
+  <% } %>
+
+  <nav class="category-nav">
+    <a href="#cat-taco">🌮 <%= t.tacos %></a>
+    <a href="#cat-wrap">🌯 <%= t.wraps %></a>
+    <a href="#cat-sandwich">🥪 <%= t.sandwiches %></a>
+    <a href="#cat-dip">🥫 <%= t.dips %></a>
+    <a href="#cat-drink">🥤 <%= t.drinks %></a>
+  </nav>
+
+  <div class="wrap">
+    <% ['taco','wrap','sandwich','dip','drink'].forEach(function(cat) {
+         var labelMap = { taco: t.tacos, wrap: t.wraps, sandwich: t.sandwiches, dip: t.dips, drink: t.drinks };
+    %>
+      <% if (byCategory[cat] && byCategory[cat].length) { %>
+        <section class="menu-section" id="cat-<%= cat %>">
+          <h2><%= labelMap[cat] %></h2>
+          <% byCategory[cat].forEach(function(item) { %>
+            <div class="dish-card"
+                 data-id="<%= item.id %>"
+                 data-name-en="<%= item.name_en %>"
+                 data-name-fr="<%= item.name_fr %>"
+                 data-price="<%= item.price %>"
+                 data-photo="<%= item.photo_url %>">
+              <img class="dish-photo" src="<%= item.photo_url %>" alt="">
+              <div class="dish-info">
+                <div class="title-row">
+                  <span class="veg-dot <%= item.is_veg ? '' : 'nonveg' %>" title="<%= item.is_veg ? t.veg : t.non_veg %>"></span>
+                  <h3><%= lang === 'en' ? item.name_en : item.name_fr %></h3>
+                </div>
+                <div class="rating-row">⭐ <%= Number(item.rating).toFixed(1) %></div>
+                <p><%= lang === 'en' ? item.ingredients_en : item.ingredients_fr %></p>
+                <div class="dish-bottom">
+                  <span class="price-tag">€<%= Number(item.price).toFixed(2) %></span>
+                  <div class="qty-slot">
+                    <button class="add-btn" type="button" data-action="add"><%= t.add %></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </section>
+      <% } %>
+    <% }); %>
+  </div>
+
+  <div class="cart-bar" id="cartBar">
+    <div>
+      <div class="count" id="cartCount">0 items</div>
+      <div class="amount" id="cartAmount">€0.00</div>
+    </div>
+    <button class="cta" onclick="window.location.href='/t/<%= table.table_code %>/checkout'"><%= t.view_cart %></button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    window.TABLE_CODE = <%- JSON.stringify(table.table_code) %>;
+    window.LANG = <%- JSON.stringify(lang) %>;
+    window.DINING = <%- JSON.stringify(dining) %>;
+    window.T = <%- JSON.stringify(t) %>;
+  </script>
+  <script src="/js/ui-states.js"></script>
+  <script src="/js/customer.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.CroustyCart) window.CroustyCart.renderMenu();
+      var socket = io();
+      socket.emit('join_menu_watchers');
+      socket.on('menu_updated', function () { window.location.reload(); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+<%- include('../partials/customer-head') %>
+</head>
+<body class="customer">
+  <div class="landing-topbar">
+    <div class="lang-pill-switch">
+      <a href="/t/<%= table.table_code %>/lang/fr?returnTo=front" class="<%= lang === 'fr' ? 'active' : '' %>">FR</a>
+      <a href="/t/<%= table.table_code %>/lang/en?returnTo=front" class="<%= lang === 'en' ? 'active' : '' %>">EN</a>
+    </div>
+  </div>
+
+  <div class="landing-content">
+    <div class="logo-badge"><span>CT</span></div>
+    <div class="brand-big">CROUSTY TAC</div>
+    <div class="tagline"><%= t.tagline %></div>
+
+    <% if (table.is_counter) { %>
+      <div class="table-pill">🛎️ <%= t.counter_order %></div>
+    <% } else { %>
+      <div class="table-pill">📍 <%= t.table %> <%= table.table_number %></div>
+    <% } %>
+
+    <form action="/t/<%= table.table_code %>/start" method="POST" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+      <input type="hidden" name="lang" value="<%= lang %>">
+
+      <div class="option-block">
+        <div class="label"><%= t.dining_question %></div>
+        <div class="toggle-row">
+          <label class="toggle-row-label" style="display:contents;">
+            <button type="button" class="dining-opt <%= dining === 'dine_in' ? 'active' : '' %>" data-value="dine_in" onclick="selectDining(this)">
+              <span class="ic">🍽️</span><span><%= t.dine_in %></span>
+            </button>
+          </label>
+          <button type="button" class="dining-opt <%= dining === 'takeaway' ? 'active' : '' %>" data-value="takeaway" onclick="selectDining(this)">
+            <span class="ic">🥡</span><span><%= t.takeaway %></span>
+          </button>
+        </div>
+        <input type="hidden" name="dining" id="diningInput" value="<%= dining %>">
+      </div>
+
+      <button type="submit" class="order-now-btn"><%= t.order_now %></button>
+    </form>
+
+    <div class="landing-footer">
+      <b>Crousty Tac</b><br>
+      <% if (settings.address) { %><%= settings.address %><br><% } %>
+      <% if (settings.phone) { %><%= settings.phone %><% } %>
+    </div>
+  </div>
+
+  <script>
+    function selectDining(btn) {
+      document.querySelectorAll('.dining-opt').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('diningInput').value = btn.dataset.value;
+    }
+  </script>
+  <script src="/js/ui-states.js"></script>
+</body>
+</html>

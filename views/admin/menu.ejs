@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'menu' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Menu</h1>
+          <p>Add, edit, or remove dishes. Changes appear on the customer app instantly.</p>
+        </div>
+        <a class="btn" href="/admin/menu/new">+ Add dish</a>
+      </div>
+
+      <div class="panel">
+        <% if (!items.length) { %>
+          <div class="empty">No dishes yet — add your first one.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead>
+              <tr><th></th><th>Name (EN / FR)</th><th>Category</th><th>Veg</th><th>Rating</th><th>Price</th><th>Days</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+              <% items.forEach(function(item) { %>
+                <tr>
+                  <td><img class="thumb" src="<%= item.photo_url %>" alt=""></td>
+                  <td><%= item.name_en %> / <%= item.name_fr %></td>
+                  <td style="text-transform:capitalize;"><%= item.category %></td>
+                  <td><span class="badge <%= item.is_veg ? 'available' : 'unavailable' %>"><%= item.is_veg ? 'Veg' : 'Non-veg' %></span></td>
+                  <td>⭐ <%= Number(item.rating).toFixed(1) %><% if (item.rating_manual_override) { %> <span title="Manually set — won't auto-update">🔒</span><% } %></td>
+                  <td>€<%= Number(item.price).toFixed(2) %></td>
+                  <td style="font-size:11.5px; color:#8a7f70;"><%= item.days_available.split(',').join(', ') %></td>
+                  <td>
+                    <form method="POST" action="/admin/menu/<%= item.id %>/toggle" style="display:inline;">
+                      <button type="submit" class="badge <%= item.is_available ? 'available' : 'unavailable' %>" style="border:none;">
+                        <%= item.is_available ? 'Available' : 'Sold out' %>
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <a class="btn small ghost" href="/admin/menu/<%= item.id %>/edit">Edit</a>
+                    <form method="POST" action="/admin/menu/<%= item.id %>/delete" style="display:inline;" onsubmit="return confirm('Delete this dish?');">
+                      <button type="submit" class="btn small secondary">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    socket.emit('join_menu_watchers');
+    socket.on('menu_updated', function () { window.location.reload(); });
+  </script>
+</body>
+</html>

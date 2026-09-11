@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/chef-head') %>
+</head>
+<body class="chef">
+  <div class="chef-login">
+    <form class="box" method="POST" action="/chef/login">
+      <div class="brand">CROUSTY TAC</div>
+      <p class="sub">Kitchen Screen Login</p>
+      <% if (error) { %><p class="error"><%= error %></p><% } %>
+      <select name="staffId" required>
+        <option value="">Select your name…</option>
+        <% chefs.forEach(function(c) { %>
+          <option value="<%= c.id %>"><%= c.name %></option>
+        <% }); %>
+      </select>
+      <input type="password" name="pin" placeholder="4-digit PIN" required inputmode="numeric" maxlength="4">
+      <button type="submit">Log in</button>
+    </form>
+  </div>
+</body>
+</html>

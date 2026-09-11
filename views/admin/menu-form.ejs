@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'menu' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1><%= item ? 'Edit dish' : 'Add a new dish' %></h1>
+          <p>Name, ingredients, price, category, and which days it's on the menu.</p>
+        </div>
+        <a class="btn ghost" href="/admin/menu">&larr; Back to menu</a>
+      </div>
+
+      <div class="panel">
+        <form method="POST" action="<%= item ? '/admin/menu/' + item.id + '/edit' : '/admin/menu/new' %>" enctype="multipart/form-data">
+          <div class="form-grid">
+            <div class="field">
+              <label>Name (English)</label>
+              <input type="text" name="name_en" value="<%= item ? item.name_en : '' %>" required>
+            </div>
+            <div class="field">
+              <label>Name (French)</label>
+              <input type="text" name="name_fr" value="<%= item ? item.name_fr : '' %>" required>
+            </div>
+
+            <div class="field full">
+              <label>Ingredients (English)</label>
+              <textarea name="ingredients_en"><%= item ? item.ingredients_en : '' %></textarea>
+            </div>
+            <div class="field full">
+              <label>Ingredients (French)</label>
+              <textarea name="ingredients_fr"><%= item ? item.ingredients_fr : '' %></textarea>
+            </div>
+
+            <div class="field">
+              <label>Category</label>
+              <select name="category" required>
+                <% ['taco','wrap','sandwich','dip','drink'].forEach(function(c) { %>
+                  <option value="<%= c %>" <%= item && item.category === c ? 'selected' : '' %>><%= c.charAt(0).toUpperCase() + c.slice(1) %></option>
+                <% }); %>
+              </select>
+            </div>
+            <div class="field">
+              <label>Price (€)</label>
+              <input type="number" step="0.10" min="0" name="price" value="<%= item ? item.price : '' %>" required>
+            </div>
+
+            <div class="field full">
+              <label>Photo</label>
+              <input type="file" name="photo" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+              <% if (item) { %><img class="thumb" src="<%= item.photo_url %>" style="margin-top:8px; width:60px; height:60px;"><% } %>
+            </div>
+
+            <div class="field">
+              <label>Veg / Non-veg</label>
+              <select name="is_veg">
+                <option value="1" <%= item && item.is_veg ? 'selected' : '' %>>🟢 Veg</option>
+                <option value="0" <%= !item || !item.is_veg ? 'selected' : '' %>>🔺 Non-veg</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Rating (1.0 – 5.0)</label>
+              <input type="number" step="0.1" min="1" max="5" name="rating" value="<%= item ? item.rating : '4.5' %>">
+            </div>
+            <div class="field full checkbox-row">
+              <input type="checkbox" name="rating_locked" id="ratingLocked" <%= item && item.rating_manual_override ? 'checked' : '' %>>
+              <label for="ratingLocked" style="margin:0;">Lock this rating (stop it from auto-updating as customers mark favourites)</label>
+            </div>
+
+            <div class="field full">
+              <label>Available on these days</label>
+              <% var days = item ? item.days_available.split(',') : ['mon','tue','wed','thu','fri','sat','sun'];
+                 var dayLabels = { mon:'Mon', tue:'Tue', wed:'Wed', thu:'Thu', fri:'Fri', sat:'Sat', sun:'Sun' }; %>
+              <div class="day-picker">
+                <% Object.keys(dayLabels).forEach(function(d) { %>
+                  <label><input type="checkbox" name="days" value="<%= d %>" <%= days.includes(d) ? 'checked' : '' %>><%= dayLabels[d] %></label>
+                <% }); %>
+              </div>
+            </div>
+
+            <div class="field full checkbox-row">
+              <input type="checkbox" name="is_available" id="isAvail" <%= (!item || item.is_available) ? 'checked' : '' %>>
+              <label for="isAvail" style="margin:0;">Available today (unchecking hides it from customers immediately)</label>
+            </div>
+          </div>
+
+          <button class="btn" type="submit" style="margin-top:18px;">Save dish</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

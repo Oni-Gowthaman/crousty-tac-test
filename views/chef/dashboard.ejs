@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+<%- include('../partials/chef-head') %>
+</head>
+<body class="chef">
+
+  <div class="chef-top">
+    <div>
+      <div class="brand">CROUSTY TAC</div>
+      <div class="staff-name"><%= t.kitchen_screen %> — <%= staff.name %></div>
+    </div>
+    <div class="right">
+      <div class="clock" id="clock"></div>
+      <div class="chef-lang-switch">
+        <a href="/chef/lang/en" class="<%= lang === 'en' ? 'active' : '' %>">EN</a>
+        <a href="/chef/lang/fr" class="<%= lang === 'fr' ? 'active' : '' %>">FR</a>
+      </div>
+      <a href="/chef/logout" class="logout-link"><%= t.logout %></a>
+    </div>
+  </div>
+
+  <div class="chef-body">
+    <div class="board" id="board">
+      <div class="column new-col">
+        <h2><%= t.new_orders %> <span class="badge" id="countNew">0</span></h2>
+        <div id="colNew"></div>
+      </div>
+      <div class="column preparing-col">
+        <h2><%= t.preparing %> <span class="badge" id="countPreparing">0</span></h2>
+        <div id="colPreparing"></div>
+      </div>
+      <div class="column ready-col">
+        <h2><%= t.ready %> <span class="badge" id="countReady">0</span></h2>
+        <div id="colReady"></div>
+      </div>
+    </div>
+
+    <div class="menu-avail-panel">
+      <h2><%= t.menu_availability %></h2>
+      <div class="avail-grid">
+        <% menuItems.forEach(function(item) { %>
+          <div class="avail-item">
+            <span class="name"><%= lang === 'en' ? item.name_en : item.name_fr %></span>
+            <label class="switch">
+              <input type="checkbox" data-toggle-id="<%= item.id %>" <%= item.is_available ? 'checked' : '' %>>
+              <span class="slider"></span>
+            </label>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/ui-states.js"></script>
+  <script>
+    window.T = <%- JSON.stringify(t) %>;
+    window.LANG = <%- JSON.stringify(lang) %>;
+  </script>
+  <script src="/js/chef.js"></script>
+</body>
+</html>

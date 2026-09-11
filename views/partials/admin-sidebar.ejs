@@ -1,0 +1,22 @@
+<div class="sidebar">
+  <div class="brand">CROUSTY TAC</div>
+  <nav>
+    <a href="/admin/dashboard" class="<%= active === 'dashboard' ? 'active' : '' %>"><%= at.nav_dashboard %></a>
+    <a href="/admin/menu" class="<%= active === 'menu' ? 'active' : '' %>"><%= at.nav_menu %></a>
+    <a href="/admin/offers" class="<%= active === 'offers' ? 'active' : '' %>"><%= at.nav_offers %></a>
+    <a href="/admin/announcements" class="<%= active === 'announcements' ? 'active' : '' %>"><%= at.nav_announcements %></a>
+    <a href="/admin/tables" class="<%= active === 'tables' ? 'active' : '' %>"><%= at.nav_tables %></a>
+    <a href="/admin/orders" class="<%= active === 'orders' ? 'active' : '' %>"><%= at.nav_orders %></a>
+    <a href="/admin/customers" class="<%= active === 'customers' ? 'active' : '' %>"><%= at.nav_customers %></a>
+    <a href="/admin/ratings" class="<%= active === 'ratings' ? 'active' : '' %>"><%= at.nav_ratings %></a>
+    <a href="/admin/reports" class="<%= active === 'reports' ? 'active' : '' %>"><%= at.nav_reports %></a>
+    <a href="/admin/settings" class="<%= active === 'settings' ? 'active' : '' %>"><%= at.nav_settings %></a>
+    <a href="/admin/staff" class="<%= active === 'staff' ? 'active' : '' %>"><%= at.nav_staff %></a>
+  </nav>
+  <div class="sidebar-lang">
+    <a href="/admin/lang/en" class="<%= adminLang === 'en' ? 'active' : '' %>">EN</a>
+    <a href="/admin/lang/fr" class="<%= adminLang === 'fr' ? 'active' : '' %>">FR</a>
+  </div>
+  <div class="staff-name"><%= at.signed_in_as %><br><strong><%= staff.name %></strong></div>
+  <a href="/admin/logout" class="logout"><%= at.logout %></a>
+</div>

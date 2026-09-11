@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'reports' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Reports</h1>
+          <p>This month so far — best sellers, payment mode split, and average kitchen prep time per item.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Top-selling items this month</h2>
+        <% if (!topItems.length) { %>
+          <div class="empty">No orders yet this month.</div>
+        <% } else { %>
+          <canvas id="topItemsChart" height="90"></canvas>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Payment mode used this month</h2>
+        <% if (!paymentBreakdown.length) { %>
+          <div class="empty">No orders yet this month.</div>
+        <% } else { %>
+          <canvas id="paymentChart" height="90"></canvas>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Average time to "Ready" per item (minutes)</h2>
+        <% if (!avgPrepTime.length) { %>
+          <div class="empty">No completed orders yet this month.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead><tr><th>Dish</th><th>Average minutes to ready</th></tr></thead>
+            <tbody>
+              <% avgPrepTime.forEach(function(row) { %>
+                <tr><td><%= row.name_en %> / <%= row.name_fr %></td><td><%= row.avg_minutes %> min</td></tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const topItems = <%- JSON.stringify(topItems) %>;
+    const paymentBreakdown = <%- JSON.stringify(paymentBreakdown) %>;
+
+    if (topItems.length && document.getElementById('topItemsChart')) {
+      new Chart(document.getElementById('topItemsChart'), {
+        type: 'bar',
+        data: {
+          labels: topItems.map(i => i.name_en),
+          datasets: [{ label: 'Quantity sold', data: topItems.map(i => i.qty), backgroundColor: '#FF7A29' }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    if (paymentBreakdown.length && document.getElementById('paymentChart')) {
+      const labelMap = { cash: 'Cash', card: 'Card', qr: 'Pay via QR' };
+      new Chart(document.getElementById('paymentChart'), {
+        type: 'doughnut',
+        data: {
+          labels: paymentBreakdown.map(p => labelMap[p.payment_mode_label] || p.payment_mode_label),
+          datasets: [{ data: paymentBreakdown.map(p => p.c), backgroundColor: ['#FF7A29', '#221B15', '#E85D04', '#9a8f80'] }]
+        }
+      });
+    }
+  </script>
+</body>
+</html>

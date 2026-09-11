@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'tables' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Tables &amp; QR Codes</h1>
+          <p>Add as many tables as you like — each gets its own QR code automatically, no code changes needed.</p>
+        </div>
+        <form method="POST" action="/admin/tables/new">
+          <button class="btn" type="submit">+ Add table</button>
+        </form>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px;">
+        <h2>Counter QR (Takeaway &amp; overflow)</h2>
+        <p style="color:#8a7f70; font-size:12.5px; margin:-6px 0 12px;">One QR code for the counter — used for takeaway orders, or by new customers when all tables are full. It doesn't auto-fill a table number; the customer picks Dine in / Takeaway themselves.</p>
+        <% if (counter) { %>
+          <div class="qr-card">
+            <img src="/admin/tables/<%= counter.table_code %>/qr.png" alt="Counter QR code">
+            <div class="meta">
+              <div class="num">Counter</div>
+              <div class="link"><%= baseUrl %>/c/<%= counter.table_code %></div>
+              <span class="badge <%= counter.is_active ? 'active' : 'inactive' %>"><%= counter.is_active ? 'Active' : 'Inactive' %></span>
+            </div>
+            <a class="btn small ghost" href="/admin/tables/<%= counter.table_code %>/qr.png" download>Download QR</a>
+            <form method="POST" action="/admin/tables/<%= counter.id %>/toggle">
+              <button type="submit" class="btn small secondary"><%= counter.is_active ? 'Deactivate' : 'Activate' %></button>
+            </form>
+          </div>
+        <% } else { %>
+          <div class="empty" style="text-align:left;">
+            No counter QR yet (only relevant if you upgraded from an older version).
+            <form method="POST" action="/admin/tables/counter/new" style="margin-top:10px;">
+              <button class="btn small" type="submit">+ Create counter QR</button>
+            </form>
+          </div>
+        <% } %>
+      </div>
+
+      <h2 style="font-family:var(--font-display); font-size:18px; margin:0 0 12px;">Tables</h2>
+      <% tables.forEach(function(tb) { %>
+        <div class="qr-card">
+          <img src="/admin/tables/<%= tb.table_code %>/qr.png" alt="QR code for table <%= tb.table_number %>">
+          <div class="meta">
+            <div class="num">Table <%= tb.table_number %></div>
+            <div class="link"><%= baseUrl %>/t/<%= tb.table_code %></div>
+            <span class="badge <%= tb.is_active ? 'active' : 'inactive' %>"><%= tb.is_active ? 'Active' : 'Inactive' %></span>
+          </div>
+          <a class="btn small ghost" href="/admin/tables/<%= tb.table_code %>/qr.png" download>Download QR</a>
+          <form method="POST" action="/admin/tables/<%= tb.id %>/toggle">
+            <button type="submit" class="btn small secondary"><%= tb.is_active ? 'Deactivate' : 'Activate' %></button>
+          </form>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</body>
+</html>

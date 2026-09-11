@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'staff' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Staff Accounts</h1>
+          <p>Create login access for chefs (4-digit PIN) or additional admins (username + password).</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Add staff member</h2>
+        <% if (error) { %><p class="error" style="color:#c22a1f; margin-bottom:10px;"><%= error %></p><% } %>
+        <form method="POST" action="/admin/staff/new" id="staffForm">
+          <div class="form-grid">
+            <div class="field">
+              <label>Name</label>
+              <input type="text" name="name" required>
+            </div>
+            <div class="field">
+              <label>Role</label>
+              <select name="role" id="roleSelect">
+                <option value="chef">Chef (kitchen screen)</option>
+                <option value="admin">Admin (full access)</option>
+              </select>
+            </div>
+            <div class="field" id="pinField">
+              <label>4-digit PIN</label>
+              <input type="password" name="pin" maxlength="4" inputmode="numeric">
+            </div>
+            <div class="field" id="usernameField" style="display:none;">
+              <label>Username</label>
+              <input type="text" name="username">
+            </div>
+            <div class="field" id="passwordField" style="display:none;">
+              <label>Password</label>
+              <input type="password" name="password">
+            </div>
+          </div>
+          <button class="btn" type="submit" style="margin-top:14px;">Create account</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>All staff</h2>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Role</th><th>Username</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <% staffList.forEach(function(s) { %>
+              <tr>
+                <td><%= s.name %> <% if (s.role === 'chef') { %><span style="color:#8a7f70; font-size:11px;">(ID: <%= s.id %>)</span><% } %></td>
+                <td style="text-transform:capitalize;"><%= s.role %></td>
+                <td><%= s.username || '—' %></td>
+                <td>
+                  <form method="POST" action="/admin/staff/<%= s.id %>/toggle" style="display:inline;">
+                    <button type="submit" class="badge <%= s.is_active ? 'active' : 'inactive' %>" style="border:none;"><%= s.is_active ? 'Active' : 'Inactive' %></button>
+                  </form>
+                </td>
+                <td>
+                  <form method="POST" action="/admin/staff/<%= s.id %>/delete" style="display:inline;" onsubmit="return confirm('Remove this staff member?');">
+                    <button type="submit" class="btn small secondary">Remove</button>
+                  </form>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('roleSelect').addEventListener('change', function () {
+      const isAdmin = this.value === 'admin';
+      document.getElementById('pinField').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('usernameField').style.display = isAdmin ? 'block' : 'none';
+      document.getElementById('passwordField').style.display = isAdmin ? 'block' : 'none';
+    });
+  </script>
+</body>
+</html>

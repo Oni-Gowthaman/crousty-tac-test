@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+<%- include('../partials/customer-head') %>
+</head>
+<body class="customer" data-table-code="<%= table.table_code %>">
+
+  <div class="status-screen">
+    <div class="order-code"><%= t.order_number %> <%= order.order_code %></div>
+    <div class="table-info">
+      <% if (order.is_counter) { %><%= t.counter_order %><% } else { %><%= t.table %> <%= order.table_number %><% } %>
+    </div>
+
+    <div class="status-hero" id="statusHero">
+      <div class="emoji" id="statusEmoji">👨‍🍳</div>
+      <h1 id="statusTitle"><%= t.status_preparing %></h1>
+      <p id="statusSub"><%= order.customer_name %></p>
+    </div>
+
+    <div class="steps" id="steps">
+      <div class="step" data-step="new"><div class="dot">1</div><div class="label"><%= t.step_received %></div></div>
+      <div class="step" data-step="preparing"><div class="dot">2</div><div class="label"><%= t.step_preparing %></div></div>
+      <div class="step" data-step="ready"><div class="dot">3</div><div class="label"><%= t.step_ready %></div></div>
+    </div>
+
+    <div class="eta-card" id="etaCard" style="<%= order.estimated_minutes ? '' : 'display:none;' %>">
+      <div class="num" id="etaNum"><%= order.estimated_minutes || '' %></div>
+      <div class="lbl"><%= t.estimated_time %> (<%= t.minutes %>)</div>
+    </div>
+
+    <a class="rate-link" id="rateLink" style="<%= (order.status === 'ready' || order.status === 'collected') ? '' : 'display:none;' %>"
+       href="/t/<%= table.table_code %>/rate/<%= order.order_code %>"><%= t.status_ready %></a>
+  </div>
+
+  <div class="ready-toast" id="readyToast"><%= t.ready_message %> — <%= t.collect_at_counter %></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    window.T = <%- JSON.stringify(t) %>;
+    window.ORDER_CODE = <%- JSON.stringify(order.order_code) %>;
+    window.INITIAL_STATUS = <%- JSON.stringify(order.status) %>;
+    window.INITIAL_ESTIMATED_MINUTES = <%- JSON.stringify(order.estimated_minutes) %>;
+  </script>
+  <script src="/js/ui-states.js"></script>
+  <script src="/js/order-status.js"></script>
+</body>
+</html>

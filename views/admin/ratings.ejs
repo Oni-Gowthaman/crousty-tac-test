@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'ratings' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Ratings &amp; Feedback</h1>
+          <p>"Which food did you like the most?" leaderboard, plus free-text comments customers left.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <form class="filter-bar" method="GET" action="/admin/ratings">
+          <div class="field">
+            <label>Filter by day</label>
+            <input type="date" name="day" value="<%= day %>">
+          </div>
+          <button class="btn small" type="submit">Filter</button>
+          <a class="btn small ghost" href="/admin/ratings">Clear</a>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Most-loved dishes</h2>
+        <% if (!leaderboard.length) { %>
+          <div class="empty">No favourites picked yet for this filter.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead><tr><th>Dish</th><th>Times picked as favourite</th></tr></thead>
+            <tbody>
+              <% leaderboard.forEach(function(row) { %>
+                <tr><td><%= row.name_en %> / <%= row.name_fr %></td><td>❤️ <%= row.loves %></td></tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Comments</h2>
+        <% if (!comments.length) { %>
+          <div class="empty">No written feedback for this filter yet.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead><tr><th>Order</th><th>Table</th><th>Comment</th><th>Date</th></tr></thead>
+            <tbody>
+              <% comments.forEach(function(c) { %>
+                <tr>
+                  <td><%= c.order_code %></td>
+                  <td><%= c.is_counter ? 'Takeaway' : 'Table ' + c.table_number %></td>
+                  <td style="max-width:340px;"><%= c.comments %></td>
+                  <td style="font-size:12px; color:#8a7f70;"><%= new Date(c.created_at).toLocaleDateString() %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

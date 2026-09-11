@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+<%- include('../partials/customer-head') %>
+</head>
+<body class="customer" data-table-code="<%= table.table_code %>" data-lang="<%= lang %>" data-dining="<%= dining %>">
+
+  <div class="top-bar">
+    <div class="top-bar-row">
+      <div>
+        <div class="brand">CROUSTY TAC</div>
+        <div class="table-tag"><% if (table.is_counter) { %><%= t.counter_order %><% } else { %><%= t.table %> <%= table.table_number %><% } %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="checkout-header">
+      <a class="back-link" href="/t/<%= table.table_code %>/menu">&larr; <%= t.back_to_menu %></a>
+      <h1><%= t.order_summary %></h1>
+    </div>
+
+    <div id="cartEmptyState" class="empty-state" style="display:none;">
+      <p><%= t.empty_cart %></p>
+      <a href="/t/<%= table.table_code %>/menu"><%= t.back_to_menu %></a>
+    </div>
+
+    <form id="checkoutForm">
+      <div class="card" id="cartLinesCard">
+        <h2><%= t.your_order %></h2>
+        <div id="cartLines"></div>
+      </div>
+
+      <div class="card">
+        <h2><%= t.add_dips %> <span class="hint"><%= t.optional %></span></h2>
+        <div id="dipsList">
+          <% dips.forEach(function(d) { %>
+            <div class="dip-row" data-dip-id="<%= d.id %>" data-dip-name-en="<%= d.name_en %>" data-dip-name-fr="<%= d.name_fr %>" data-dip-price="<%= d.price %>" onclick="window.CroustyCart.toggleDip(<%= d.id %>)">
+              <div class="dip-left">
+                <div class="dip-checkbox" id="dipCheck<%= d.id %>"></div>
+                <div class="dip-name"><%= lang === 'en' ? d.name_en : d.name_fr %></div>
+              </div>
+              <div class="dip-price">+€<%= Number(d.price).toFixed(2) %></div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="totals-row"><span><%= t.subtotal %></span><span id="sumSubtotal">€0.00</span></div>
+        <div class="totals-row discount" id="sumDiscountRow" style="display:none;"><span><%= t.discount %></span><span id="sumDiscount">-€0.00</span></div>
+        <div class="totals-row" id="sumTaxRow" style="display:none;"><span><%= t.tax %></span><span id="sumTax">€0.00</span></div>
+        <div class="totals-row" id="sumChargeRow" style="display:none;"><span><%= t.service_charge %></span><span id="sumCharge">€0.00</span></div>
+        <div class="totals-row grand"><span><%= t.total %></span><span id="sumTotal">€0.00</span></div>
+      </div>
+
+      <div class="card">
+        <h2><%= t.your_details %></h2>
+        <div class="field">
+          <label for="custName"><%= t.full_name %></label>
+          <input type="text" id="custName" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="custMobile"><%= t.mobile_number %></label>
+          <input type="tel" id="custMobile" name="mobile" required autocomplete="tel" placeholder="06 12 34 56 78">
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label for="cookingInstructions"><%= t.cooking_instructions %></label>
+          <textarea id="cookingInstructions" name="cookingInstructions" maxlength="500" placeholder="<%= t.cooking_instructions_ph %>"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><%= t.payment_method %></h2>
+        <div class="pay-options">
+          <label data-method="cash">
+            <span class="icon">💶</span>
+            <input type="radio" name="paymentMode" value="cash" checked>
+            <%= t.cash %>
+          </label>
+          <label data-method="card">
+            <span class="icon">💳</span>
+            <input type="radio" name="paymentMode" value="card">
+            <%= t.card %>
+          </label>
+          <label data-method="qr">
+            <span class="icon">▦</span>
+            <input type="radio" name="paymentMode" value="qr">
+            <%= t.pay_qr %>
+          </label>
+        </div>
+        <p class="payment-note"><%= t.payment_note %></p>
+      </div>
+
+      <button class="place-order-btn" type="submit" id="placeOrderBtn"><%= t.place_order %></button>
+    </form>
+  </div>
+
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-card">
+      <div class="emoji">✅</div>
+      <h2><%= t.order_confirmed_title %></h2>
+      <p><%= t.order_confirmed_msg %></p>
+      <button type="button" id="confirmContinueBtn"><%= t.continue_btn %></button>
+    </div>
+  </div>
+
+  <script>
+    window.TABLE_CODE = <%- JSON.stringify(table.table_code) %>;
+    window.LANG = <%- JSON.stringify(lang) %>;
+    window.DINING = <%- JSON.stringify(dining) %>;
+    window.T = <%- JSON.stringify(t) %>;
+    window.ACTIVE_OFFER = <%- activeOffer ? JSON.stringify({ type: activeOffer.discount_type, value: Number(activeOffer.discount_value) }) : 'null' %>;
+    window.SETTINGS = <%- JSON.stringify({ taxPercent: Number(settings.tax_percent), chargePercent: Number(settings.service_charge_percent) }) %>;
+  </script>
+  <script src="/js/ui-states.js"></script>
+  <script src="/js/customer.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.CroustyCart) window.CroustyCart.renderCheckout();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'dashboard' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Dashboard</h1>
+          <p>How Crousty Tac is doing today.</p>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num"><%= todayOrders %></div><div class="lbl">Orders today</div></div>
+        <div class="stat-card"><div class="num">€<%= Number(todayRevenue).toFixed(2) %></div><div class="lbl">Revenue today</div></div>
+        <% var counts = { new: 0, preparing: 0, ready: 0 }; activeOrders.forEach(function(r){ counts[r.status] = r.c; }); %>
+        <div class="stat-card"><div class="num"><%= counts.new %></div><div class="lbl">Waiting to start</div></div>
+        <div class="stat-card"><div class="num"><%= counts.preparing + counts.ready %></div><div class="lbl">In the kitchen now</div></div>
+        <div class="stat-card"><div class="num"><%= soldOutCount %></div><div class="lbl">Sold out right now</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>Best sellers today</h2>
+        <% if (!topDishes.length) { %>
+          <div class="empty">No orders yet today.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead><tr><th>Dish</th><th>Quantity sold</th></tr></thead>
+            <tbody>
+              <% topDishes.forEach(function(d) { %>
+                <tr><td><%= d.name_en %> / <%= d.name_fr %></td><td><%= d.qty %></td></tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <h2>Quick links</h2>
+        <a class="btn small" href="/admin/menu">Edit menu</a>
+        <a class="btn small secondary" href="/admin/tables">Manage tables &amp; QR codes</a>
+        <a class="btn small ghost" href="/admin/orders">View all orders</a>
+        <a class="btn small ghost" href="/admin/reports">View reports</a>
+        <a class="btn small ghost" href="/admin/settings">Tax &amp; charge settings</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

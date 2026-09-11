@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include('../partials/admin-head') %>
+</head>
+<body class="admin">
+  <div class="admin-shell">
+    <%- include('../partials/admin-sidebar', { active: 'announcements' }) %>
+    <div class="main">
+      <div class="page-head">
+        <div>
+          <h1>Announcements</h1>
+          <p>Plain banner messages shown on the customer app — no discount attached (use Offers for that).</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>New announcement</h2>
+        <form method="POST" action="/admin/announcements/new">
+          <div class="form-grid">
+            <div class="field">
+              <label>Message (English)</label>
+              <input type="text" name="message_en" placeholder="Closed Monday for a private event" required>
+            </div>
+            <div class="field">
+              <label>Message (French)</label>
+              <input type="text" name="message_fr" placeholder="Fermé lundi pour un événement privé" required>
+            </div>
+            <div class="field full checkbox-row">
+              <input type="checkbox" name="is_active" id="annActive" checked>
+              <label for="annActive" style="margin:0;">Active</label>
+            </div>
+          </div>
+          <button class="btn" type="submit" style="margin-top:14px;">Create announcement</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>All announcements</h2>
+        <% if (!announcements.length) { %>
+          <div class="empty">No announcements yet.</div>
+        <% } else { %>
+          <table class="data-table">
+            <thead><tr><th>Message</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <% announcements.forEach(function(a) { %>
+                <tr>
+                  <td><%= a.message_en %> / <%= a.message_fr %></td>
+                  <td>
+                    <form method="POST" action="/admin/announcements/<%= a.id %>/toggle" style="display:inline;">
+                      <button type="submit" class="badge <%= a.is_active ? 'active' : 'inactive' %>" style="border:none;">
+                        <%= a.is_active ? 'Active' : 'Inactive' %>
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <form method="POST" action="/admin/announcements/<%= a.id %>/delete" style="display:inline;" onsubmit="return confirm('Delete this announcement?');">
+                      <button type="submit" class="btn small secondary">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

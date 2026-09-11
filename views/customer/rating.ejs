@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+<%- include('../partials/customer-head') %>
+</head>
+<body class="customer">
+
+  <div class="rating-screen" id="ratingForm">
+    <h1><%= t.liked_most_q %></h1>
+    <p class="subhead"><%= t.liked_most_hint %></p>
+
+    <div class="favorite-grid" id="favoriteGrid">
+      <% orderItems.forEach(function(item) { %>
+        <div class="favorite-item" data-item-id="<%= item.id %>" onclick="toggleFavorite(this)">
+          <img class="fi-photo" src="<%= item.photo_url %>" alt="">
+          <div class="fi-name"><%= lang === 'en' ? item.name_en : item.name_fr %></div>
+          <div class="fi-check">✓</div>
+        </div>
+      <% }); %>
+    </div>
+
+    <div class="card">
+      <div class="field" style="margin-bottom:0;">
+        <label><%= t.feedback_optional %></label>
+        <textarea id="comments"></textarea>
+      </div>
+    </div>
+    <button class="place-order-btn" type="button" id="submitRating" style="margin-top:16px;"><%= t.submit_rating %></button>
+  </div>
+
+  <div class="thank-you" id="thankYou" style="display:none;">
+    <div class="emoji">🎉</div>
+    <h1><%= t.thank_you %></h1>
+    <p><%= t.thank_you_msg %></p>
+  </div>
+
+  <script>
+    window.T = <%- JSON.stringify(t) %>;
+    window.ORDER_CODE = <%- JSON.stringify(order.order_code) %>;
+    window.LANG = <%- JSON.stringify(lang) %>;
+  </script>
+  <script src="/js/ui-states.js"></script>
+  <script src="/js/rating.js"></script>
+</body>
+</html>

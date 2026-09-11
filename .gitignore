@@ -1,0 +1,16 @@
+# Dependencies — installed fresh by `npm install` wherever this runs
+node_modules/
+
+# Your real secrets — never commit this. Only .env.example is tracked.
+.env
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Generated at runtime — safe to regenerate, no need to track in git
+public/uploads/qr/*.png
+public/uploads/menu/dish-*
+
+# Logs
+npm-debug.log*
