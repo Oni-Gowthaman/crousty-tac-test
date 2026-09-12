@@ -24,7 +24,7 @@ async function run() {
     [DEFAULT_ADMIN.name, DEFAULT_ADMIN.username, passwordHash]
   );
 
-  const [existingChef] = await db.query('SELECT id FROM staff WHERE role = "chef" LIMIT 1');
+  const [existingChef] = await db.query(`SELECT id FROM staff WHERE role = 'chef' LIMIT 1`);
   if (!existingChef.length) {
     await db.query(`INSERT INTO staff (name, role, pin_hash) VALUES (?, 'chef', ?)`, [DEFAULT_CHEF.name, pinHash]);
   }

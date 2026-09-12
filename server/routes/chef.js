@@ -7,21 +7,21 @@ const { allFor } = require('../utils/i18n');
 
 router.get('/login', async (req, res) => {
   if (req.session.staff && req.session.staff.role === 'chef') return res.redirect('/chef/dashboard');
-  const [chefs] = await db.query('SELECT id, name FROM staff WHERE role = "chef" AND is_active = 1 ORDER BY name');
+  const [chefs] = await db.query(`SELECT id, name FROM staff WHERE role = 'chef' AND is_active = 1 ORDER BY name`);
   res.render('chef/login', { error: null, chefs });
 });
 
 router.post('/login', async (req, res) => {
   const { staffId, pin } = req.body;
-  const [rows] = await db.query('SELECT * FROM staff WHERE id = ? AND role = "chef" AND is_active = 1', [staffId]);
+  const [rows] = await db.query(`SELECT * FROM staff WHERE id = ? AND role = 'chef' AND is_active = 1`, [staffId]);
   if (!rows.length) {
-    const [chefs] = await db.query('SELECT id, name FROM staff WHERE role = "chef" AND is_active = 1 ORDER BY name');
+    const [chefs] = await db.query(`SELECT id, name FROM staff WHERE role = 'chef' AND is_active = 1 ORDER BY name`);
     return res.render('chef/login', { error: 'Unknown staff member.', chefs });
   }
 
   const match = await bcrypt.compare(pin || '', rows[0].pin_hash || '');
   if (!match) {
-    const [chefs] = await db.query('SELECT id, name FROM staff WHERE role = "chef" AND is_active = 1 ORDER BY name');
+    const [chefs] = await db.query(`SELECT id, name FROM staff WHERE role = 'chef' AND is_active = 1 ORDER BY name`);
     return res.render('chef/login', { error: 'Incorrect PIN.', chefs });
   }
 

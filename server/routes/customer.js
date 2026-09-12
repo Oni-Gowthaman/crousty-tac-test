@@ -114,7 +114,7 @@ router.get('/t/:tableCode/checkout', findLocation, async (req, res) => {
   const dining = getDining(req, req.table);
   const activeOffer = await getActiveOffer();
   const settings = await getSettings();
-  const [dips] = await db.query('SELECT * FROM menu_items WHERE category = "dip" AND is_available = 1 ORDER BY sort_order, id');
+  const [dips] = await db.query(`SELECT * FROM menu_items WHERE category = 'dip' AND is_available = 1 ORDER BY sort_order, id`);
 
   res.render('customer/checkout', {
     table: req.table,

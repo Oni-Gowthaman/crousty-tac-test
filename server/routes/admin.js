@@ -23,7 +23,7 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const [rows] = await db.query('SELECT * FROM staff WHERE username = ? AND role = "admin" AND is_active = 1', [username]);
+  const [rows] = await db.query(`SELECT * FROM staff WHERE username = ? AND role = 'admin' AND is_active = 1`, [username]);
   if (!rows.length) return res.render('admin/login', { error: 'Unknown username.' });
 
   const match = await bcrypt.compare(password || '', rows[0].password_hash || '');
@@ -378,10 +378,10 @@ router.post('/staff/new', async (req, res) => {
   try {
     if (role === 'admin') {
       const hash = await bcrypt.hash(password, 10);
-      await db.query('INSERT INTO staff (name, role, username, password_hash) VALUES (?, "admin", ?, ?)', [name, username, hash]);
+      await db.query(`INSERT INTO staff (name, role, username, password_hash) VALUES (?, 'admin', ?, ?)`, [name, username, hash]);
     } else {
       const hash = await bcrypt.hash(pin, 10);
-      await db.query('INSERT INTO staff (name, role, pin_hash) VALUES (?, "chef", ?)', [name, hash]);
+      await db.query(`INSERT INTO staff (name, role, pin_hash) VALUES (?, 'chef', ?)`, [name, hash]);
     }
     res.redirect('/admin/staff');
   } catch (err) {
