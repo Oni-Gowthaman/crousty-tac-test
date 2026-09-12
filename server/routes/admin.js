@@ -259,17 +259,30 @@ router.post('/tables/:id/toggle', async (req, res) => {
   res.redirect('/admin/tables');
 });
 
-// Regenerate the QR image on demand (e.g. if the PNG file was lost)
+// Always (re)generate the QR image from the CURRENT BASE_URL — never
+// reuse a stale cached file. This is what makes "Regenerate QR" below
+// actually fix a wrong/old URL baked into a previously-made image.
 router.get('/tables/:code/qr.png', async (req, res) => {
   const [rows] = await db.query('SELECT * FROM restaurant_tables WHERE table_code = ?', [req.params.code]);
   if (!rows.length) return res.status(404).send('Not found');
   const table = rows[0];
   const qrPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'qr', `${req.params.code}.png`);
-  if (!fs.existsSync(qrPath)) {
-    const link = table.is_counter ? `${BASE_URL}/c/${req.params.code}` : `${BASE_URL}/t/${req.params.code}`;
+  const link = table.is_counter ? `${BASE_URL}/c/${req.params.code}` : `${BASE_URL}/t/${req.params.code}`;
+  await QRCode.toFile(qrPath, link, { width: 500, margin: 2 });
+  res.set('Cache-Control', 'no-store'); // browsers/phones should never cache an old QR image either
+  res.sendFile(qrPath);
+});
+
+// Regenerate EVERY table + counter QR in one click — use this any time
+// BASE_URL changes (e.g. moving from Render's free URL to a real domain).
+router.post('/tables/regenerate-all', async (req, res) => {
+  const [rows] = await db.query('SELECT * FROM restaurant_tables');
+  for (const table of rows) {
+    const qrPath = path.join(__dirname, '..', '..', 'public', 'uploads', 'qr', `${table.table_code}.png`);
+    const link = table.is_counter ? `${BASE_URL}/c/${table.table_code}` : `${BASE_URL}/t/${table.table_code}`;
     await QRCode.toFile(qrPath, link, { width: 500, margin: 2 });
   }
-  res.sendFile(qrPath);
+  res.redirect('/admin/tables');
 });
 
 // ===========================================================
