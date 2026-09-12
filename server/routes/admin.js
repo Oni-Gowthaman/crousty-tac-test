@@ -11,7 +11,7 @@ const { generateTableCode } = require('../utils/helpers');
 const { recalcItemRating } = require('../utils/ratingRecalc');
 const { allFor: adminT } = require('../utils/adminI18n');
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+const BASE_URL = process.env.BASE_URL || 'https://crousty-tac-test.onrender.com';
 
 // ===========================================================
 // Auth
